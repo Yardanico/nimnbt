@@ -9,3 +9,7 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 0.18.1"
+requires "zip"
+
+task test, "Runs the test suite":
+  exec "cd tests && nim c -r bigtest.nim"
