@@ -1,4 +1,3 @@
-# NBT parsing in Nim. Implemented with the help from http://wiki.vg/NBT
 import streams, endians, tables
 import zip/zlib # Wrapper for the libzip library
 

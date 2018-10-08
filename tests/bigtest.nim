@@ -1,4 +1,4 @@
-import ../src/nimnbt, streams, unittest, tables
+import ../src/nimnbt, streams, unittest, tables, os
 
 
 
@@ -7,7 +7,7 @@ suite "bigtest.nbt":
   #var data = newFileStream("bigtest.nbt")
 
   checkpoint "Parsing NBT (gzip compressed)"
-  var tag = parseNbtFile("bigtest_gzip.nbt")
+  var tag = parseNbtFile(getAppDir() / "bigtest_gzip.nbt")
 
   test "root compound":
     check(tag.kind == Compound)
