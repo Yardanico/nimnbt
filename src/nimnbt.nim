@@ -1,7 +1,7 @@
 # A Nim library for parsing NBT file format used in Minecraft
 # https://wiki.vg/NBT was used as a reference to the format
 
-import streams, endians, tables
+import streams, endians, tables, json
 import zip/zlib               # Wrapper for the libzip library
 
 
@@ -62,7 +62,6 @@ proc parseNbtInternal(s: Stream, tagKind = End, parseName = true): Tag =
   if result.kind == End: return
 
   if parseName: result.name = s.readString()
-
   case result.kind
   of End: return
   of Byte:
@@ -154,9 +153,17 @@ proc parseNbt*(s: string): Tag =
   ## *s* may be compressed via gzip/zlib
   result = parseNbtInternal(decompress(s))
 
-proc `[]`*(t: Tag, name: string): Tag =
+
+template `[]`*(t: Tag, name: string): Tag =
   ## A convenient proc to access tag in the compound
+  assert t.kind == Compound
   t.compound[name]
+
+
+template `in`*(t: Tag, name: string): bool =
+  ## Check if an item with *name* is in the compound
+  assert t.kind == Compound
+  name in t.compound
 
 
 proc len*(t: Tag): int =
@@ -170,3 +177,47 @@ proc len*(t: Tag): int =
   of IntArray: t.ints.len
   of LongArray: t.longs.len
   else: raise newException(ValueError, "invalid tag kind!")
+
+proc toJson*(s: Tag): JsonNode =
+  ## Converts an NBT tag to the JSON for printing/serialization
+  case s.kind
+    of Byte:
+      result = newJInt(s.byteVal)
+    of Short:
+      result = newJInt(s.shortVal)
+    of Int:
+      result = newJInt(s.intVal)
+    of Long:
+      result = newJInt(s.longVal)
+    of Float:
+      result = newJFloat(s.floatVal)
+    of Double:
+      result = newJFloat(s.doubleVal)
+    of ByteArray:
+      result = newJArray()
+      for itm in s.bytes:
+        result.add(newJInt(itm))
+    of String:
+      result = newJString(s.str)
+    of List:
+      result = newJArray()
+      for itm in s.values:
+        result.add(toJson(itm))
+    of Compound:
+      result = newJObject()
+      for k, v in s.compound:
+        result.add(k, toJson(v))
+    of IntArray:
+      result = newJArray()
+      for itm in s.bytes:
+        result.add(newJInt(itm))
+    of LongArray:
+      var arr = newJArray()
+      for itm in s.bytes:
+        arr.add(newJInt(itm))
+    of End:
+      return
+
+proc `$`*(t: Tag): string =
+  ## Converts Tag to a string for easier debugging/visualising
+  $toJson(t).pretty()
