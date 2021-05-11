@@ -58,7 +58,7 @@ proc readString(s: Stream): string {.inline.} =
 
 
 proc parseNbtInternal(s: Stream, tagKind = End, parseName = true): Tag =
-  result.kind = if tagKind == End: TagKind(s.readUint8()) else: tagKind
+  result = Tag(kind: if tagKind == End: TagKind(s.readUint8()) else: tagKind)
   if result.kind == End: return
 
   if parseName: result.name = s.readString()
