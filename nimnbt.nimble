@@ -1,7 +1,7 @@
 # Package
 
 version       = "0.2.0"
-author        = "Yardanico (Daniil Yarantsev), Timofffee (George Linkovsky)"
+author        = "Yardanico (Daniil Yarantsev)"
 description   = "NBT format implementation in Nim"
 license       = "MIT"
 srcDir        = "src"
