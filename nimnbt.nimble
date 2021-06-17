@@ -1,14 +1,14 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.2.0"
 author        = "Yardanico (Daniil Yarantsev)"
-description   = "NBT parsing in Nim"
+description   = "NBT format implementation in Nim"
 license       = "MIT"
 srcDir        = "src"
 
 # Dependencies
 
-requires "nim >= 0.18.1"
+requires "nim >= 1.4.0"
 requires "zip"
 
 task test, "Runs the test suite":

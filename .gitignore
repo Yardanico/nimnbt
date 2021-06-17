@@ -1,2 +1,11 @@
-nimnbt
-bigtest
+nimcache/
+
+# Ignore all
+*
+
+# Unignore all with extensions and folders
+!*.*
+!*/
+
+*.exe
+.DS_Store
